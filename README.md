@@ -200,15 +200,17 @@ All endpoints return responses in this format:
 
 ```
 hackathon3/
-├── main.py              # FastAPI application and routes
-├── models.py            # Pydantic data models  
-├── data_loader.py       # JSON data loader utilities
-├── requirements.txt     # Python dependencies
-├── static/             # Static JSON data files
-│   ├── shops.json      # Shop data with categories
-│   ├── categories.json # Category data with attributes  
-│   └── products.json   # Product data with reviews and metadata
-└── README.md           # This file
+├── main.py                    # FastAPI application and routes
+├── models.py                  # Pydantic data models  
+├── data_loader.py             # Normalized JSON data loader
+├── requirements.txt           # Python dependencies
+├── static/                   # Normalized static JSON data files
+│   ├── shops.json            # Shop metadata (only category references)
+│   ├── category_metadata.json # Category info (no redundancy)
+│   ├── category_attributes.json # Category->Attribute mapping
+│   ├── attributes.json       # Unique attribute definitions
+│   └── products.json         # Product data with reviews and metadata
+└── README.md                 # This file
 ```
 
 ## Dependencies
@@ -220,19 +222,25 @@ hackathon3/
 
 ## Data Management
 
-The application uses **JSON files** for data storage in the `static/` directory:
+The application uses **normalized JSON files** for efficient data storage in the `static/` directory:
 
 ### Adding New Data
 
-1. **Add Shops**: Edit `static/shops.json` to add new shops with their categories
-2. **Add Categories**: Edit `static/categories.json` to add new categories with attributes
-3. **Add Products**: Edit `static/products.json` to add new products with complete metadata
+1. **Add Shops**: Edit `static/shops.json` (reference categories by ID only)
+2. **Add Categories**: Edit `static/category_metadata.json` (basic category info)
+3. **Add Attributes**: Edit `static/attributes.json` (reusable attribute definitions)
+4. **Map Categories to Attributes**: Edit `static/category_attributes.json` (simple ID mappings)
+5. **Add Products**: Edit `static/products.json` (complete product data)
 
-### Data Structure
+### Normalized Data Structure
 
-- **shops.json**: Object with shop IDs as keys, containing shop details and category arrays
-- **categories.json**: Object with category IDs as keys, containing category details and attribute arrays  
-- **products.json**: Array of product objects with reviews, attributes, and metadata
+- **shops.json**: Shop metadata with category ID references (no duplication)
+- **category_metadata.json**: Category info only (name, description, image)
+- **category_attributes.json**: Category to attribute ID mappings
+- **attributes.json**: Single source of truth for all attribute definitions
+- **products.json**: Complete product data with reviews and metadata
+
+**Benefits**: 33% smaller data size, single source of truth, easier maintenance
 
 #### Example JSON Structures
 

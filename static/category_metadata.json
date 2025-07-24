@@ -1,0 +1,50 @@
+{
+  "clothing": {
+    "id": "clothing",
+    "name": "Clothing",
+    "description": "Fashion clothing for all occasions",
+    "image_url": "https://example.com/images/clothing.jpg"
+  },
+  "accessories": {
+    "id": "accessories",
+    "name": "Accessories",
+    "description": "Fashion accessories to complete your look",
+    "image_url": "https://example.com/images/accessories.jpg"
+  },
+  "footwear": {
+    "id": "footwear",
+    "name": "Footwear",
+    "description": "Comfortable and stylish footwear",
+    "image_url": "https://example.com/images/footwear.jpg"
+  },
+  "smartphones": {
+    "id": "smartphones",
+    "name": "Smartphones",
+    "description": "Latest smartphones with cutting-edge technology",
+    "image_url": "https://example.com/images/smartphones.jpg"
+  },
+  "laptops": {
+    "id": "laptops",
+    "name": "Laptops",
+    "description": "High-performance laptops for work and gaming",
+    "image_url": "https://example.com/images/laptops.jpg"
+  },
+  "furniture": {
+    "id": "furniture",
+    "name": "Furniture",
+    "description": "Beautiful furniture for your home",
+    "image_url": "https://example.com/images/furniture.jpg"
+  },
+  "decor": {
+    "id": "decor",
+    "name": "Home Decor",
+    "description": "Decorative items to beautify your space",
+    "image_url": "https://example.com/images/decor.jpg"
+  },
+  "appliances": {
+    "id": "appliances",
+    "name": "Appliances",
+    "description": "Essential home appliances for modern living",
+    "image_url": "https://example.com/images/appliances.jpg"
+  }
+} 

@@ -1,0 +1,10 @@
+{
+  "clothing": ["size", "color", "material", "brand"],
+  "accessories": ["color", "material", "brand"],
+  "footwear": ["size", "color", "brand", "type"],
+  "smartphones": ["brand", "storage", "ram", "color"],
+  "laptops": ["brand", "processor", "ram", "storage"],
+  "furniture": ["material", "color", "style"],
+  "decor": ["color", "material", "style"],
+  "appliances": ["brand", "capacity", "energy_rating", "color"]
+} 
