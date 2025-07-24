@@ -93,6 +93,158 @@ Once the server is running, you can access:
   - Reviews and ratings
   - All attributes and metadata
 
+## API Response Examples
+
+### 1. GET /shops - Sample Response:
+```json
+{
+    "success": true,
+    "data": [
+        {
+            "id": "shop_1",
+            "name": "Fashion Store",
+            "description": "Your one-stop destination for trendy fashion",
+            "image_url": "https://example.com/images/fashion-store.jpg",
+            "categories": [
+                {
+                    "id": "clothing",
+                    "name": "Clothing",
+                    "description": "Fashion clothing for all occasions",
+                    "image_url": "https://example.com/images/clothing.jpg"
+                },
+                {
+                    "id": "accessories",
+                    "name": "Accessories",
+                    "description": "Fashion accessories to complete your look",
+                    "image_url": "https://example.com/images/accessories.jpg"
+                }
+            ]
+        }
+    ],
+    "message": null
+}
+```
+
+### 2. GET /categories - Sample Response:
+```json
+{
+    "success": true,
+    "data": [
+        {
+            "id": "clothing",
+            "name": "Clothing",
+            "description": "Fashion clothing for all occasions",
+            "image_url": "https://example.com/images/clothing.jpg",
+            "attributes": [
+                {
+                    "id": "size",
+                    "name": "Size",
+                    "type": "select",
+                    "allowed_values": ["XS", "S", "M", "L", "XL", "XXL"]
+                },
+                {
+                    "id": "color",
+                    "name": "Color",
+                    "type": "select",
+                    "allowed_values": ["Red", "Blue", "Green", "Black", "White"]
+                }
+            ]
+        }
+    ],
+    "message": null
+}
+```
+
+### 3. GET /categories/{category_id} - Sample Response:
+```json
+{
+    "success": true,
+    "data": {
+        "id": "clothing",
+        "name": "Clothing",
+        "description": "Fashion clothing for all occasions",
+        "image_url": "https://example.com/images/clothing.jpg",
+        "attributes": [
+            {
+                "id": "size",
+                "name": "Size",
+                "type": "select",
+                "allowed_values": ["XS", "S", "M", "L", "XL", "XXL"]
+            }
+        ]
+    },
+    "message": null
+}
+```
+
+### 4. POST /products - Sample Response:
+```json
+{
+    "success": true,
+    "data": [
+        {
+            "id": "prod_1",
+            "name": "Cotton T-Shirt",
+            "description": "Comfortable cotton t-shirt for everyday wear",
+            "price": 29.99,
+            "image_url": "https://example.com/images/products/cotton-tshirt.jpg",
+            "category_id": "clothing",
+            "shop_id": "shop_1",
+            "reviews": {
+                "rating": 4.5,
+                "count": 128,
+                "average": 4.5
+            },
+            "attributes": {
+                "size": "M",
+                "color": "Blue",
+                "material": "Cotton",
+                "brand": "H&M"
+            },
+            "metadata": {
+                "sku": "TSH001",
+                "weight": "200g",
+                "care_instructions": "Machine wash cold"
+            }
+        }
+    ],
+    "message": "Found 1 products for category 'clothing'"
+}
+```
+
+### 5. GET /products/{product_id} - Sample Response:
+```json
+{
+    "success": true,
+    "data": {
+        "id": "prod_1",
+        "name": "Cotton T-Shirt",
+        "description": "Comfortable cotton t-shirt for everyday wear",
+        "price": 29.99,
+        "image_url": "https://example.com/images/products/cotton-tshirt.jpg",
+        "category_id": "clothing",
+        "shop_id": "shop_1",
+        "reviews": {
+            "rating": 4.5,
+            "count": 128,
+            "average": 4.5
+        },
+        "attributes": {
+            "size": "M",
+            "color": "Blue",
+            "material": "Cotton",
+            "brand": "H&M"
+        },
+        "metadata": {
+            "sku": "TSH001",
+            "weight": "200g",
+            "care_instructions": "Machine wash cold"
+        }
+    },
+    "message": null
+}
+```
+
 ## Sample Data Structure
 
 ### Shops with Enhanced Metadata
