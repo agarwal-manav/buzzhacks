@@ -1,0 +1,74 @@
+{
+  "shop_1": {
+    "id": "shop_1",
+    "name": "Fashion Store",
+    "description": "Your one-stop destination for trendy fashion",
+    "image_url": "https://example.com/images/fashion-store.jpg",
+    "categories": [
+      {
+        "id": "clothing",
+        "name": "Clothing",
+        "description": "Fashion clothing for all occasions",
+        "image_url": "https://example.com/images/clothing.jpg"
+      },
+      {
+        "id": "accessories",
+        "name": "Accessories",
+        "description": "Fashion accessories to complete your look",
+        "image_url": "https://example.com/images/accessories.jpg"
+      },
+      {
+        "id": "footwear",
+        "name": "Footwear",
+        "description": "Comfortable and stylish footwear",
+        "image_url": "https://example.com/images/footwear.jpg"
+      }
+    ]
+  },
+  "shop_2": {
+    "id": "shop_2",
+    "name": "Electronics Hub",
+    "description": "Latest electronics and gadgets",
+    "image_url": "https://example.com/images/electronics-hub.jpg",
+    "categories": [
+      {
+        "id": "smartphones",
+        "name": "Smartphones",
+        "description": "Latest smartphones with cutting-edge technology",
+        "image_url": "https://example.com/images/smartphones.jpg"
+      },
+      {
+        "id": "laptops",
+        "name": "Laptops",
+        "description": "High-performance laptops for work and gaming",
+        "image_url": "https://example.com/images/laptops.jpg"
+      }
+    ]
+  },
+  "shop_3": {
+    "id": "shop_3",
+    "name": "Home & Garden",
+    "description": "Everything for your home and garden needs",
+    "image_url": "https://example.com/images/home-garden.jpg",
+    "categories": [
+      {
+        "id": "furniture",
+        "name": "Furniture",
+        "description": "Beautiful furniture for your home",
+        "image_url": "https://example.com/images/furniture.jpg"
+      },
+      {
+        "id": "decor",
+        "name": "Home Decor",
+        "description": "Decorative items to beautify your space",
+        "image_url": "https://example.com/images/decor.jpg"
+      },
+      {
+        "id": "appliances",
+        "name": "Appliances",
+        "description": "Essential home appliances for modern living",
+        "image_url": "https://example.com/images/appliances.jpg"
+      }
+    ]
+  }
+} 

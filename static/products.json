@@ -1,0 +1,230 @@
+[
+  {
+    "id": "prod_1",
+    "name": "Cotton T-Shirt",
+    "description": "Comfortable cotton t-shirt for everyday wear",
+    "price": 29.99,
+    "image_url": "https://example.com/images/products/cotton-tshirt.jpg",
+    "category_id": "clothing",
+    "shop_id": "shop_1",
+    "reviews": {
+      "rating": 4.5,
+      "count": 128,
+      "average": 4.5
+    },
+    "attributes": {
+      "size": "M",
+      "color": "Blue",
+      "material": "Cotton",
+      "brand": "H&M"
+    },
+    "metadata": {
+      "sku": "TSH001",
+      "weight": "200g",
+      "care_instructions": "Machine wash cold"
+    }
+  },
+  {
+    "id": "prod_2",
+    "name": "Leather Belt",
+    "description": "Genuine leather belt with metal buckle",
+    "price": 49.99,
+    "image_url": "https://example.com/images/products/leather-belt.jpg",
+    "category_id": "accessories",
+    "shop_id": "shop_1",
+    "reviews": {
+      "rating": 4.2,
+      "count": 87,
+      "average": 4.2
+    },
+    "attributes": {
+      "color": "Brown",
+      "material": "Leather",
+      "brand": "Zara"
+    },
+    "metadata": {
+      "sku": "BLT002",
+      "width": "3.5cm",
+      "buckle_material": "Metal"
+    }
+  },
+  {
+    "id": "prod_3",
+    "name": "Running Shoes",
+    "description": "Lightweight running shoes for athletes",
+    "price": 89.99,
+    "image_url": "https://example.com/images/products/running-shoes.jpg",
+    "category_id": "footwear",
+    "shop_id": "shop_1",
+    "reviews": {
+      "rating": 4.7,
+      "count": 234,
+      "average": 4.7
+    },
+    "attributes": {
+      "size": "9",
+      "color": "Black",
+      "brand": "Nike",
+      "type": "Sports"
+    },
+    "metadata": {
+      "sku": "SHO003",
+      "weight": "350g",
+      "sole_material": "Rubber"
+    }
+  },
+  {
+    "id": "prod_4",
+    "name": "iPhone 15",
+    "description": "Latest iPhone with advanced features",
+    "price": 999.99,
+    "image_url": "https://example.com/images/products/iphone-15.jpg",
+    "category_id": "smartphones",
+    "shop_id": "shop_2",
+    "reviews": {
+      "rating": 4.8,
+      "count": 512,
+      "average": 4.8
+    },
+    "attributes": {
+      "brand": "Apple",
+      "storage": "256GB",
+      "ram": "8GB",
+      "color": "Black"
+    },
+    "metadata": {
+      "sku": "IPH004",
+      "model": "A2846",
+      "screen_size": "6.1 inches",
+      "battery": "3349mAh"
+    }
+  },
+  {
+    "id": "prod_5",
+    "name": "MacBook Pro",
+    "description": "Professional laptop for developers and creators",
+    "price": 1999.99,
+    "image_url": "https://example.com/images/products/macbook-pro.jpg",
+    "category_id": "laptops",
+    "shop_id": "shop_2",
+    "reviews": {
+      "rating": 4.9,
+      "count": 342,
+      "average": 4.9
+    },
+    "attributes": {
+      "brand": "Apple",
+      "processor": "Apple M2",
+      "ram": "16GB",
+      "storage": "512GB"
+    },
+    "metadata": {
+      "sku": "MBP005",
+      "model": "A2485",
+      "screen_size": "14 inches",
+      "weight": "1.6kg"
+    }
+  },
+  {
+    "id": "prod_6",
+    "name": "Samsung Galaxy S24",
+    "description": "Flagship Android smartphone",
+    "price": 799.99,
+    "image_url": "https://example.com/images/products/galaxy-s24.jpg",
+    "category_id": "smartphones",
+    "shop_id": "shop_2",
+    "reviews": {
+      "rating": 4.6,
+      "count": 298,
+      "average": 4.6
+    },
+    "attributes": {
+      "brand": "Samsung",
+      "storage": "128GB",
+      "ram": "8GB",
+      "color": "White"
+    },
+    "metadata": {
+      "sku": "GAL006",
+      "model": "SM-S921B",
+      "screen_size": "6.2 inches",
+      "battery": "4000mAh"
+    }
+  },
+  {
+    "id": "prod_7",
+    "name": "Modern Coffee Table",
+    "description": "Sleek modern coffee table for living room",
+    "price": 299.99,
+    "image_url": "https://example.com/images/products/coffee-table.jpg",
+    "category_id": "furniture",
+    "shop_id": "shop_3",
+    "reviews": {
+      "rating": 4.4,
+      "count": 156,
+      "average": 4.4
+    },
+    "attributes": {
+      "material": "Wood",
+      "color": "Brown",
+      "style": "Modern"
+    },
+    "metadata": {
+      "sku": "CFT007",
+      "dimensions": "120x60x45cm",
+      "weight": "25kg",
+      "assembly_required": true
+    }
+  },
+  {
+    "id": "prod_8",
+    "name": "Table Lamp",
+    "description": "Elegant table lamp for ambient lighting",
+    "price": 79.99,
+    "image_url": "https://example.com/images/products/table-lamp.jpg",
+    "category_id": "decor",
+    "shop_id": "shop_3",
+    "reviews": {
+      "rating": 4.3,
+      "count": 89,
+      "average": 4.3
+    },
+    "attributes": {
+      "color": "White",
+      "material": "Metal",
+      "style": "Contemporary"
+    },
+    "metadata": {
+      "sku": "LMP008",
+      "height": "45cm",
+      "bulb_type": "LED",
+      "power": "15W"
+    }
+  },
+  {
+    "id": "prod_9",
+    "name": "Refrigerator",
+    "description": "Energy efficient refrigerator with large capacity",
+    "price": 899.99,
+    "image_url": "https://example.com/images/products/refrigerator.jpg",
+    "category_id": "appliances",
+    "shop_id": "shop_3",
+    "reviews": {
+      "rating": 4.5,
+      "count": 167,
+      "average": 4.5
+    },
+    "attributes": {
+      "brand": "Samsung",
+      "capacity": "Large",
+      "energy_rating": "A++",
+      "color": "White"
+    },
+    "metadata": {
+      "sku": "REF009",
+      "capacity_liters": "450L",
+      "dimensions": "180x60x65cm",
+      "warranty": "2 years"
+    }
+  }
+] 
