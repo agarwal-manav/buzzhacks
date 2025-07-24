@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Western Wear Shop</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: flex;
+            min-height: 600px;
+        }
+
+        .chat-section {
+            flex: 2;
+            padding: 30px;
+            border-right: 2px solid #e1e5e9;
+        }
+
+        .output-section {
+            flex: 1;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+
+        .chat-container {
+            border: 2px solid #e1e5e9;
+            border-radius: 15px;
+            height: 400px;
+            overflow-y: auto;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: #f8f9fa;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 12px 16px;
+            border-radius: 15px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+
+        .message.shopkeeper {
+            background: #8B4513;
+            color: white;
+            margin-right: auto;
+        }
+
+        .message.user {
+            background: #D2691E;
+            color: white;
+            margin-left: auto;
+        }
+
+        .message.system {
+            background: #f1f3f4;
+            color: #333;
+            margin: 0 auto;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .input-section {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .input-section input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .input-section input:focus {
+            border-color: #8B4513;
+        }
+
+        .input-section button {
+            background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .input-section button:hover {
+            transform: translateY(-2px);
+        }
+
+        .input-section button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 10px;
+            color: #666;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #8B4513;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .output-section h3 {
+            color: #8B4513;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .output-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            border-left: 4px solid #D2691E;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .output-item h4 {
+            color: #8B4513;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .output-item .value {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .confidence-high {
+            color: #28a745 !important;
+        }
+
+        .confidence-medium {
+            color: #ffc107 !important;
+        }
+
+        .confidence-low {
+            color: #dc3545 !important;
+        }
+
+        .text-dialogue {
+            max-height: 200px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            line-height: 1.4;
+            white-space: pre-wrap;
+        }
+
+        .next-page-button {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .next-page-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .next-page-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .chat-section, .output-section {
+                padding: 20px;
+            }
+            
+            .chat-section {
+                border-right: none;
+                border-bottom: 2px solid #e1e5e9;
+            }
+            
+            .header h1 {
+                font-size: 2.5em;
+            }
+            
+            .chat-container {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤠 Western Wear</h1>
+            <p>Welcome to our shop! Let me help you find the perfect item.</p>
+        </div>
+
+        <div class="main-content">
+            <div class="chat-section">
+                <div class="chat-container" id="chat-container">
+                    <!-- AI responses will be added here dynamically -->
+                </div>
+
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Shopkeeper is thinking...</p>
+                </div>
+
+                <div class="input-section">
+                    <input type="text" id="user-input" placeholder="Type your message here..." onkeypress="handleKeyPress(event)">
+                    <button onclick="sendMessage()" id="send-button">Send</button>
+                </div>
+            </div>
+
+            <div class="output-section">
+                <h3>🎯 Shopping Results</h3>
+                
+                <div class="output-item">
+                    <h4>Selected Category</h4>
+                    <div class="value" id="selected-category">Not determined yet</div>
+                </div>
+                
+                <div class="output-item">
+                    <h4>Confidence Level</h4>
+                    <div class="value" id="confidence">0%</div>
+                </div>
+                
+                <div class="output-item">
+                    <h4>Text Dialogue</h4>
+                    <div class="text-dialogue" id="text-dialogue">Conversation will appear here...</div>
+                </div>
+                
+                <button class="next-page-button" id="next-page-button" onclick="goToNextPage()" disabled>
+                    Continue to Next Page
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+        let conversationHistory = [];
+
+        // Load prompt from file
+        async function loadPrompt() {
+            try {
+                console.log('📁 Loading category prompt from file...');
+                const response = await fetch('/static/category_prompt.txt');
+                if (!response.ok) {
+                    throw new Error('Failed to load prompt file');
+                }
+                const promptText = await response.text();
+                console.log('📄 Loaded category prompt text:', promptText);
+                
+                // Initialize conversation history with the loaded prompt
+                conversationHistory = [
+                    {
+                        role: "user",
+                        content: promptText
+                    }
+                ];
+                console.log('💾 Initialized conversation history:', conversationHistory);
+                
+                return true;
+            } catch (error) {
+                console.error('❌ Error loading category prompt:', error);
+                addMessage(`Error loading prompt: ${error.message}`, 'system');
+                return false;
+            }
+        }
+
+        // Send initial prompt to get AI's first response
+        async function sendInitialPrompt() {
+            showLoading();
+            
+            try {
+                console.log('🔍 Sending initial category prompt to AI...');
+                console.log('📤 Request payload:', {
+                    messages: conversationHistory,
+                    max_tokens: 1000,
+                    temperature: 0.7
+                });
+                
+                const response = await fetch(`${API_BASE}/chat`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        messages: conversationHistory,
+                        max_tokens: 1000,
+                        temperature: 0.7
+                    })
+                });
+
+                const data = await response.json();
+                console.log('📥 AI Response:', data);
+                
+                if (data.success) {
+                    console.log('✅ AI response successful');
+                    console.log('📝 Raw AI text:', data.text);
+                    
+                    // Add the AI's response to the chat
+                    addMessage(data.text, 'shopkeeper');
+                    conversationHistory.push({ role: "assistant", content: data.text });
+                } else {
+                    console.error('❌ AI response failed:', data.error);
+                    addMessage(`Error: ${data.error || 'Something went wrong'}`, 'system');
+                }
+            } catch (error) {
+                console.error('💥 Error in sendInitialPrompt:', error);
+                addMessage(`Error: ${error.message}`, 'system');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function addMessage(content, role) {
+            const chatContainer = document.getElementById('chat-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+            messageDiv.textContent = content;
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('send-button').disabled = true;
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('send-button').disabled = false;
+        }
+
+        function parseResponse(responseText) {
+            const result = {
+                textDialogue: '',
+                selectedCategory: 'Not determined yet',
+                confidence: '0%',
+                confidenceValue: 0
+            };
+
+            // Split the response into sections
+            const sections = responseText.split(/\d+\.\s+/);
+            
+            if (sections.length >= 4) {
+                // Text Dialogue (section 1)
+                result.textDialogue = sections[1]?.trim() || '';
+                
+                // Selected Category (section 2)
+                const categoryMatch = sections[2]?.match(/Selected Category[:\s]*([^\n]+)/i);
+                if (categoryMatch) {
+                    result.selectedCategory = categoryMatch[1].trim();
+                }
+                
+                // Confidence (section 3)
+                const confidenceMatch = sections[3]?.match(/Confidence[:\s]*(\d+)%/i);
+                if (confidenceMatch) {
+                    result.confidence = confidenceMatch[1] + '%';
+                    result.confidenceValue = parseInt(confidenceMatch[1]);
+                }
+            } else {
+                // Fallback parsing if the format is different
+                const categoryMatch = responseText.match(/Selected Category[:\s]*([^\n]+)/i);
+                const confidenceMatch = responseText.match(/Confidence[:\s]*(\d+)%/i);
+                
+                if (categoryMatch) {
+                    result.selectedCategory = categoryMatch[1].trim();
+                }
+                if (confidenceMatch) {
+                    result.confidence = confidenceMatch[1] + '%';
+                    result.confidenceValue = parseInt(confidenceMatch[1]);
+                }
+                
+                result.textDialogue = responseText;
+            }
+
+            return result;
+        }
+
+        function updateOutputSection(parsedResult) {
+            const selectedCategory = document.getElementById('selected-category');
+            const confidence = document.getElementById('confidence');
+            const textDialogue = document.getElementById('text-dialogue');
+            const nextPageButton = document.getElementById('next-page-button');
+
+            // Update selected category
+            selectedCategory.textContent = parsedResult.selectedCategory;
+
+            // Update confidence with color coding
+            confidence.textContent = parsedResult.confidence;
+            confidence.className = 'value';
+            
+            if (parsedResult.confidenceValue >= 75) {
+                confidence.classList.add('confidence-high');
+            } else if (parsedResult.confidenceValue >= 50) {
+                confidence.classList.add('confidence-medium');
+            } else {
+                confidence.classList.add('confidence-low');
+            }
+
+            // Update text dialogue
+            textDialogue.textContent = parsedResult.textDialogue;
+
+            // Enable next page button if confidence is high enough
+            if (parsedResult.confidenceValue >= 75) {
+                nextPageButton.disabled = false;
+                nextPageButton.textContent = `Continue to Next Page (${parsedResult.confidence} confident)`;
+            } else {
+                nextPageButton.disabled = true;
+                nextPageButton.textContent = 'Continue to Next Page';
+            }
+        }
+
+        function goToNextPage() {
+            const category = document.getElementById('selected-category').textContent;
+            const confidence = document.getElementById('confidence').textContent;
+            
+            // Redirect to the product selection page with parameters
+            window.location.href = `/static/products.html?category=${encodeURIComponent(category)}&confidence=${encodeURIComponent(confidence)}`;
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('user-input');
+            const message = input.value.trim();
+            
+            if (!message) return;
+
+            // Add user message to chat
+            addMessage(message, 'user');
+            conversationHistory.push({ role: "user", content: message });
+            
+            input.value = '';
+            showLoading();
+
+            try {
+                const response = await fetch(`${API_BASE}/chat`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        messages: conversationHistory,
+                        max_tokens: 1000,
+                        temperature: 0.7
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    addMessage(data.text, 'shopkeeper');
+                    conversationHistory.push({ role: "assistant", content: data.text });
+                    
+                    // Update output section with processed data
+                    if (data.full_response && data.full_response.processed_response) {
+                        const processed = data.full_response.processed_response;
+                        updateOutputSection({
+                            textDialogue: processed.full_response,
+                            selectedCategory: processed.selected_category,
+                            confidence: processed.confidence,
+                            confidenceValue: processed.confidence_value
+                        });
+                    }
+                } else {
+                    addMessage(`Error: ${data.error || 'Something went wrong'}`, 'system');
+                }
+            } catch (error) {
+                addMessage(`Error: ${error.message}`, 'system');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        // Check if server is running
+        async function checkServer() {
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                if (!response.ok) {
+                    addMessage('⚠️ Server is not running. Please start the server with: python gemini_api.py', 'system');
+                }
+            } catch (error) {
+                addMessage('⚠️ Cannot connect to server. Please start the server with: python gemini_api.py', 'system');
+            }
+        }
+
+        // Initialize page when loaded
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('🚀 Category page loaded, initializing...');
+            checkServer();
+            
+            // Load prompt first, then send initial prompt
+            console.log('📁 Starting category prompt loading process...');
+            const promptLoaded = await loadPrompt();
+            if (promptLoaded) {
+                console.log('✅ Category prompt loaded successfully, sending to AI...');
+                // Send initial prompt after a short delay to ensure page is loaded
+                setTimeout(sendInitialPrompt, 500);
+            } else {
+                console.error('❌ Failed to load category prompt');
+            }
+        });
+    </script>
+</body>
+</html> 

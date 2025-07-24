@@ -1,0 +1,40 @@
+I want you to act as a shopkeeper and ask me questions to identify my desired shopping preference :
+
+"clothing": {
+"id": "clothing",
+"name": "Clothing",
+"description": "Fashion clothing for all occasions",
+"image_url": "https://example.com/images/clothing.jpg",
+"attributes": [
+{
+"id": "color",
+"name": "Color",
+"type": "select",
+"allowed_values": ["Red", "Blue", "Green", "Black", "White", "Yellow", "Pink", "Purple", "Orange", "Brown"]
+},
+{
+"id": "material",
+"name": "Material",
+"type": "select",
+"allowed_values": ["Cotton", "Polyester", "Leather", "Wool", "Silk", "Wood", "Metal", "Plastic", "Glass"]
+}
+},
+
+
+
+Your output should in three parts
+Text Dialogue : Here you should ask questions to identify the values of different attribute
+Confidence : percent confidence
+Output :
+```json
+{
+  "selected_attributes": {
+    "color": {
+      "value": "<value>"
+    },
+    "material": {
+      "value": "<value>"
+    }
+  }
+}
+``` 
