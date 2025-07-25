@@ -13,7 +13,7 @@ class TryOnService:
     def __init__(self):
         pass
 
-    def try_on(self, product_img_url: str, user_img_url: str):
+    def try_on(self, product_img_url: str, user_img_url: str, attempt: int = 0):
         """
         curl --location 'https://api.segmind.com/v1/idm-vton' \
             --header 'x-api-key: SG_d5b9ece50252bdf6' \
@@ -50,50 +50,13 @@ class TryOnService:
             timeout=100000000
         )
         self.api_key_index = (self.api_key_index + 1) % len(self.api_keys)
-        """
-        curl --location --request POST 
-        "https://api.imgbb.com/1/upload?expiration=600&key=d856a774e50ef4aeb3c9cef89d0e7887" --form "image=R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-        
-        Response:
-        {
-            "data": {
-                "id": "2ndCYJK",
-                "title": "c1f64245afb2",
-                "url_viewer": "https://ibb.co/2ndCYJK",
-                "url": "https://i.ibb.co/w04Prt6/c1f64245afb2.gif",
-                "display_url": "https://i.ibb.co/98W13PY/c1f64245afb2.gif",
-                "width":"1",
-                "height":"1",
-                "size": "42",
-                "time": "1552042565",
-                "expiration":"0",
-                "image": {
-                "filename": "c1f64245afb2.gif",
-                "name": "c1f64245afb2",
-                "mime": "image/gif",
-                "extension": "gif",
-                "url": "https://i.ibb.co/w04Prt6/c1f64245afb2.gif",
-                },
-                "thumb": {
-                "filename": "c1f64245afb2.gif",
-                "name": "c1f64245afb2",
-                "mime": "image/gif",
-                "extension": "gif",
-                "url": "https://i.ibb.co/2ndCYJK/c1f64245afb2.gif",
-                },
-                "medium": {
-                "filename": "c1f64245afb2.gif",
-                "name": "c1f64245afb2",
-                "mime": "image/gif",
-                "extension": "gif",
-                "url": "https://i.ibb.co/98W13PY/c1f64245afb2.gif",
-                },
-                "delete_url": "https://ibb.co/2ndCYJK/670a7e48ddcb85ac340c717a41047e5c"
-            },
-            "success": true,
-            "status": 200
-            }
-        """
+        if response.status_code != 200:
+            print(f"Failed to try on product after {attempt} attempts")
+            if attempt < 3:
+                return self.try_on(product_img_url, user_img_url, attempt + 1)
+            else:
+                raise Exception("Failed to try on product after 3 attempts")
+
         response = httpx.post(
             "https://api.imgbb.com/1/upload?expiration=600&key=d856a774e50ef4aeb3c9cef89d0e7887",
             files={
