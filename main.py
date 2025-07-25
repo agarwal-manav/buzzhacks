@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from typing import List
 import uvicorn
-from models import APIResponse, AgentRequest, AgentResponse, CategoriesRequest, CategoriesResponse, ProductResponse
+from models import APIResponse, AgentRequest, AgentResponse, CategoriesRequest, CategoriesResponse
 from data_loader import CATEGORIES, SHOPS
 import httpx
 from pydantic import BaseModel
@@ -26,7 +26,7 @@ async def root():
                 "get_category_by_id": "GET /categories/{category_id} - Get specific category by ID",
                 "get_products": "POST /products - Get products by category with optional attribute filters",
                 "get_product_by_id": "GET /products/{product_id} - Get specific product by ID",
-                "agent_wrapper": "POST /products - Wrapper for n8n agent webhook with prompts list"
+                "agent_wrapper": "POST /agent - Wrapper for n8n agent webhook with prompts and products array"
             }
         }
     )
@@ -67,16 +67,15 @@ async def list_categories(request: CategoriesRequest):
 async def agent_wrapper(request: AgentRequest):
     """
     Wrapper API that forwards requests to the n8n agent webhook to get products from prompt
-    Accepts prompts list and returns simplified response with AI answer and products
+    Accepts prompts list and products array, returns complete response with AI answer and full products array
     """
-    import random
     
     n8n_webhook_url = "http://localhost:5678/webhook/eded0c77-3125-45ab-9796-7501a498d3be"
     
-    # Map prompts to webhook's expected history format
+    # Map prompts to webhook's expected format with products array
     request_data = {
         "history": [{"role": "user", "content": prompt} for prompt in request.prompts],
-        "preferences": {}
+        "products": request.products if request.products is not None else []
     }
     
     try:
@@ -91,39 +90,9 @@ async def agent_wrapper(request: AgentRequest):
             
             webhook_response = response.json()
             
-            # Transform response to match the required format
+            # Return the complete response with full products array
             ai_response = webhook_response.get("ai_response", "")
-            
-            # Transform products to simplified format
-            products = []
-            if "products" in webhook_response and webhook_response["products"]:
-                for product in webhook_response["products"]:
-                    # Generate mock price and rating since not in original data
-                    mock_price = round(random.uniform(150.0, 500.0), 2)
-                    mock_rating = round(random.uniform(3.5, 5.0), 1)
-                    
-                    # Get the first image URL if available
-                    image_url = ""
-                    if product.get("images") and len(product["images"]) > 0:
-                        image_url = product["images"][0]
-                    
-                    # Transform taxonomy attributes to "field_name::value" format
-                    taxonomy_attrs = []
-                    if product.get("taxonomy_attributes"):
-                        for attr in product["taxonomy_attributes"]:
-                            field_name = attr.get("field_name", "")
-                            value = attr.get("value", "")
-                            if field_name and value:
-                                taxonomy_attrs.append(f"{field_name}::{value}")
-                    
-                    products.append(ProductResponse(
-                        product_id=product.get("id", 0),
-                        product_name=product.get("name", ""),
-                        price=mock_price,
-                        rating=mock_rating,
-                        image_url=image_url,
-                        taxonomy_attributes=taxonomy_attrs
-                    ))
+            products = webhook_response.get("products", [])
             
             return AgentResponse(
                 ai_response=ai_response,
