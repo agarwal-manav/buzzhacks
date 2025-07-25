@@ -35,6 +35,7 @@ class ProductResponse(BaseModel):
     price: float
     rating: float
     image_url: str
+    taxonomy_attributes: List[str]
 
 class AgentResponse(BaseModel):
     ai_response: str

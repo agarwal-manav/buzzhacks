@@ -107,12 +107,22 @@ async def agent_wrapper(request: AgentRequest):
                     if product.get("images") and len(product["images"]) > 0:
                         image_url = product["images"][0]
                     
+                    # Transform taxonomy attributes to "field_name::value" format
+                    taxonomy_attrs = []
+                    if product.get("taxonomy_attributes"):
+                        for attr in product["taxonomy_attributes"]:
+                            field_name = attr.get("field_name", "")
+                            value = attr.get("value", "")
+                            if field_name and value:
+                                taxonomy_attrs.append(f"{field_name}::{value}")
+                    
                     products.append(ProductResponse(
                         product_id=product.get("id", 0),
                         product_name=product.get("name", ""),
                         price=mock_price,
                         rating=mock_rating,
-                        image_url=image_url
+                        image_url=image_url,
+                        taxonomy_attributes=taxonomy_attrs
                     ))
             
             return AgentResponse(
