@@ -2,16 +2,16 @@
   "1": {
     "id": "1",
     "name": "Ethnic Wear Store",
-    "first_prompt": ""
+    "first_prompt": "Show me some ethnic wear clothes"
   },
   "2": {
     "id": "2",
     "name": "Western Wear Store",
-    "first_prompt": ""
+    "first_prompt": "Show me some western wear clothes"
   },
   "3": {
     "id": "3",
     "name": "Home Decor Store",
-    "first_prompt": ""
+    "first_prompt": "Show me some home decor products"
   }
 }
