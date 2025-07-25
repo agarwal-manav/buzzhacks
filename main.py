@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from models import APIResponse, AgentRequest, AgentResponse, CategoriesRequest, CategoriesResponse, TryProductOnImageRequest, TryProductOnImageResponse
 from data_loader import CATEGORIES, SHOPS
@@ -10,6 +11,16 @@ app = FastAPI(
     description="Backend API for e-commerce platform with shops, categories, and products",
     version="1.0.0"
 )
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
+)
+
 try_on_service = TryOnService()
 
 @app.get("/", response_model=APIResponse)
