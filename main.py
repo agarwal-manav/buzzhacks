@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-from models import APIResponse, AgentRequest, AgentResponse, CategoriesRequest, CategoriesResponse, TryProductOnImageRequest, TryProductOnImageResponse
+from models import APIResponse, AgentRequest, AgentResponse, SimpleProduct, CategoriesRequest, CategoriesResponse, TryProductOnImageRequest, TryProductOnImageResponse
 from data_loader import CATEGORIES, SHOPS
 import httpx
 from service.try_on_service import TryOnService
@@ -80,7 +80,7 @@ async def list_categories(request: CategoriesRequest):
 async def agent_wrapper(request: AgentRequest):
     """
     Wrapper API that forwards requests to the n8n agent webhook to get products from prompt
-    Accepts prompts list and products array, returns complete response with AI answer and full products array
+    Accepts prompts list and products array, returns simplified response with AI answer and product summary
     """
     
     if len(request.prompts) == 1:
@@ -107,9 +107,41 @@ async def agent_wrapper(request: AgentRequest):
             
             webhook_response = response.json()
             
-            # Return the complete response with full products array
+            # Transform response to simplified format
             ai_response = webhook_response.get("ai_response", "")
-            products = webhook_response.get("products", [])
+            
+            # Transform products to simplified format
+            products = []
+            if "products" in webhook_response and webhook_response["products"]:
+                import random
+                for product in webhook_response["products"]:
+                    # Generate mock price and rating since not in original data
+                    mock_price = round(random.uniform(150.0, 500.0), 2)
+                    mock_rating = round(random.uniform(3.5, 5.0), 1)
+                    
+                    # Get the first image URL if available
+                    image_url = ""
+                    if product.get("images") and len(product["images"]) > 0:
+                        image_url = product["images"][0]
+                    
+                    # Get only first two words of product name
+                    full_name = product.get("name", "")
+                    words = full_name.split()
+                    short_name = " ".join(words[:2]) if len(words) >= 2 else full_name
+                    
+                    # Get category name
+                    category = ""
+                    if product.get("new_category") and product["new_category"].get("sub_sub_category_name"):
+                        category = product["new_category"]["sub_sub_category_name"]
+                    
+                    products.append(SimpleProduct(
+                        product_id=product.get("id", 0),
+                        product_name=short_name,
+                        price=mock_price,
+                        rating=mock_rating,
+                        image_url=image_url,
+                        category=category
+                    ))
             
             agent_response = AgentResponse(
                 ai_response=ai_response,

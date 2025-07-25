@@ -29,9 +29,17 @@ class ChatMessage(BaseModel):
 class AgentRequest(BaseModel):
     prompts: List[str]
     products: Optional[List[dict]] = []
+class SimpleProduct(BaseModel):
+    product_id: int
+    product_name: str
+    price: float
+    rating: float
+    image_url: str
+    category: str
+
 class AgentResponse(BaseModel):
     ai_response: str
-    products: List[dict]
+    products: List[SimpleProduct]
 
 class CategoriesResponse(BaseModel):
     first_prompt: str
