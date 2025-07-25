@@ -82,10 +82,11 @@ async def agent_wrapper(request: AgentRequest):
     Wrapper API that forwards requests to the n8n agent webhook to get products from prompt
     Accepts prompts list and products array, returns simplified response with AI answer and product summary
     """
-    
-    if len(request.prompts) == 1:
-        if request.prompts[0] in inmem_cache:
-            return inmem_cache[request.prompts[0]]
+
+    # prepare a combined string of prompts
+    combined_prompt = ",".join(request.prompts)
+    if combined_prompt in inmem_cache:
+        return inmem_cache[combined_prompt]
     
     n8n_webhook_url = "http://localhost:5678/webhook/eded0c77-3125-45ab-9796-7501a498d3be"
     
@@ -147,8 +148,7 @@ async def agent_wrapper(request: AgentRequest):
                 ai_response=ai_response,
                 products=products
             )
-            if len(request.prompts) == 1:
-                inmem_cache[request.prompts[0]] = agent_response
+            inmem_cache[combined_prompt] = agent_response
             return agent_response
     except httpx.TimeoutException:
         raise HTTPException(status_code=504, detail="Request to agent timed out")
