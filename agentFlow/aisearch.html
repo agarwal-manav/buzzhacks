@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Shopping Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Simple animation for the loading spinner */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .spinner {
+            animation: spin 1s linear infinite;
+        }
+        /* Fade-in animation for results */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        .chat-bubble-ai {
+            background-color: #f3f4f6; /* gray-100 */
+            border-radius: 20px 20px 20px 5px;
+        }
+        .chat-bubble-user {
+            background-color: #e0e7ff; /* indigo-100 */
+            border-radius: 20px 20px 5px 20px;
+        }
+        .attr-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        /* Hide scrollbar but allow scrolling */
+        #productGrid::-webkit-scrollbar {
+            display: none;
+        }
+        #productGrid {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        
+        /* Scroll indicators */
+        .scroll-indicator {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background: rgba(99, 102, 241, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .scroll-indicator:hover {
+            background: rgba(99, 102, 241, 1);
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .scroll-left {
+            left: -20px;
+        }
+        
+        .scroll-right {
+            right: -20px;
+        }
+        
+        .scroll-indicator.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        /* Product grid container with relative positioning for indicators */
+        .product-grid-container {
+            position: relative;
+            margin: 0 20px;
+        }
+        
+        /* Fade effect on edges to indicate more content */
+        .product-grid-container::before,
+        .product-grid-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 40px;
+            z-index: 5;
+            pointer-events: none;
+        }
+        
+        .product-grid-container::before {
+            left: 0;
+            background: linear-gradient(to right, rgba(249, 250, 251, 1), rgba(249, 250, 251, 0));
+        }
+        
+        .product-grid-container::after {
+            right: 0;
+            background: linear-gradient(to left, rgba(249, 250, 251, 1), rgba(249, 250, 251, 0));
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-4xl relative">
+
+        <!-- Environment Toggle Switch -->
+        <div class="absolute top-4 left-4 flex items-center space-x-3 bg-white p-2 rounded-full shadow-md border">
+            <span class="text-sm font-medium text-gray-700 ml-2">Test</span>
+            <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="envToggle" class="sr-only peer" checked>
+                <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-2 peer-focus:ring-indigo-300 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+            </label>
+            <span class="text-sm font-medium text-gray-700 mr-2">Prod</span>
+        </div>
+
+        <!-- Header -->
+        <header class="text-center mb-8 pt-16">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900">AI Shopping Assistant</h1>
+            <p class="text-gray-600 mt-2">Describe what you're looking for, and I'll find it for you!</p>
+        </header>
+
+        <!-- Initial Search Bar -->
+        <div id="initialSearchContainer" class="flex flex-col sm:flex-row gap-2 mb-8">
+            <input type="text" id="searchInput" class="flex-grow w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow" placeholder="e.g., 'a red silk saree for a wedding'">
+            <button id="searchButton" class="w-full sm:w-auto bg-indigo-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-transform transform hover:scale-105">
+                Search
+            </button>
+        </div>
+
+        <!-- Main Content Area -->
+        <main id="resultsArea">
+            <!-- Loading Indicator -->
+            <div id="loadingIndicator" class="text-center py-10 hidden">
+                <div class="inline-block w-8 h-8 border-4 border-t-indigo-600 border-r-indigo-600 border-b-indigo-600 border-l-transparent rounded-full spinner"></div>
+                <p class="mt-3 text-gray-600">Your assistant is thinking...</p>
+            </div>
+
+            <!-- Error Message Display -->
+            <div id="errorMessage" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative" role="alert">
+                <strong class="font-bold">Oops!</strong>
+                <span class="block sm:inline" id="errorText">Something went wrong.</span>
+            </div>
+
+            <!-- Conversation/Chat Area -->
+            <div id="chatLog" class="space-y-4 mb-8">
+                <!-- Chat messages will be inserted here -->
+            </div>
+
+            <!-- Product Display Area -->
+            <div class="product-grid-container">
+                <div id="productGrid" class="flex overflow-x-auto space-x-6 pb-4 mb-8">
+                    <!-- Product cards will be inserted here by JavaScript -->
+                </div>
+                <!-- Scroll Indicators -->
+                <button class="scroll-indicator scroll-left hidden" id="scrollLeft" onclick="scrollProducts('left')">
+                    ‹
+                </button>
+                <button class="scroll-indicator scroll-right hidden" id="scrollRight" onclick="scrollProducts('right')">
+                    ›
+                </button>
+            </div>
+            
+            <!-- Follow-up Input Area -->
+            <div id="followUpContainer" class="hidden flex flex-col sm:flex-row gap-2 mt-4">
+                <input type="text" id="followUpInput" class="flex-grow w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow" placeholder="Type your answer here...">
+                <button id="followUpButton" class="w-full sm:w-auto bg-indigo-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-transform transform hover:scale-105">
+                    Send
+                </button>
+            </div>
+        </main>
+
+    </div>
+
+    <script>
+        // --- DOM Element References ---
+        const envToggle = document.getElementById('envToggle');
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        const initialSearchContainer = document.getElementById('initialSearchContainer');
+
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorText = document.getElementById('errorText');
+        
+        const chatLog = document.getElementById('chatLog');
+        const productGrid = document.getElementById('productGrid');
+
+        const followUpContainer = document.getElementById('followUpContainer');
+        const followUpInput = document.getElementById('followUpInput');
+        const followUpButton = document.getElementById('followUpButton');
+
+        // --- State Management ---
+        let chatHistory = [];
+        let preferences = {}; // To store user's attribute preferences
+
+        // --- API Configuration ---
+        const N8N_WEBHOOK_URL_TEST = 'http://localhost:5678/webhook-test/eded0c77-3125-45ab-9796-7501a498d3be';
+        const N8N_WEBHOOK_URL_PROD = 'http://localhost:5678/webhook/eded0c77-3125-45ab-9796-7501a498d3be';
+        
+        // --- Core Application Logic ---
+
+        const callAgentAndRender = async () => {
+            loadingIndicator.classList.remove('hidden');
+            errorMessage.classList.add('hidden');
+            productGrid.innerHTML = ''; // Clear previous products
+
+            try {
+                // Determine which URL to use based on the toggle state
+                const isProd = envToggle.checked;
+                const N8N_WEBHOOK_URL = isProd ? N8N_WEBHOOK_URL_PROD : N8N_WEBHOOK_URL_TEST;
+                console.log(`Using ${isProd ? 'Production' : 'Test'} URL: ${N8N_WEBHOOK_URL}`);
+
+                // 1. Call n8n agent. It's the ONLY API call the UI makes.
+                const requestBody = { 
+                    history: chatHistory,
+                    preferences: preferences 
+                };
+
+                const workflowResponse = await (await fetch(N8N_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(requestBody)
+                })).json();
+
+                // Display AI response in the UI, but DO NOT add it to the history sent to the agent
+                addMessageToChatLog('assistant', workflowResponse.ai_response);
+
+                // 2. Check for products in the response from n8n
+                if (!workflowResponse.products || workflowResponse.products.length === 0) {
+                    if(workflowResponse.ai_response) followUpContainer.classList.remove('hidden');
+                    return;
+                }
+                
+                // 3. Display products directly from the n8n response
+                displayProducts(workflowResponse.products);
+                
+                // 4. Show follow-up input
+                followUpContainer.classList.remove('hidden');
+
+            } catch (err) {
+                console.error("An error occurred:", err);
+                displayError("An error occurred while communicating with the assistant. Check the console for details.");
+            } finally {
+                loadingIndicator.classList.add('hidden');
+            }
+        };
+
+        const handleInitialSearch = () => {
+            const query = searchInput.value.trim();
+            if (!query) {
+                displayError("Please enter a search query.");
+                return;
+            }
+            resetUI();
+            initialSearchContainer.classList.add('hidden');
+            
+            chatHistory = [{ role: 'user', content: query }];
+            addMessageToChatLog('user', query);
+            
+            callAgentAndRender();
+        };
+
+        const handleFollowUp = () => {
+            const query = followUpInput.value.trim();
+            if (!query) {
+                 // Allow sending just preferences without a text query
+                if (Object.keys(preferences).length > 0) {
+                     chatHistory.push({ role: 'user', content: "(Updated my preferences by clicking on attributes)" });
+                     addMessageToChatLog('user', "Okay, find products with my new preferences.");
+                } else {
+                    return;
+                }
+            } else {
+                chatHistory.push({ role: 'user', content: query });
+                addMessageToChatLog('user', query);
+                followUpInput.value = '';
+            }
+
+            callAgentAndRender();
+        };
+        
+        // --- UI Rendering Functions ---
+
+        const addMessageToChatLog = (role, content) => {
+            const messageDiv = document.createElement('div');
+            const bubbleClass = role === 'user' ? 'chat-bubble-user self-end' : 'chat-bubble-ai self-start';
+            messageDiv.className = `p-4 max-w-lg fade-in ${bubbleClass}`;
+            messageDiv.textContent = content;
+            chatLog.appendChild(messageDiv);
+            chatLog.scrollTop = chatLog.scrollHeight;
+        };
+
+        const displayProducts = (products) => {
+            products.forEach((product, index) => {
+                const card = document.createElement('div');
+                // UPDATED: Added flex-shrink-0 and a fixed width for horizontal scrolling
+                card.className = 'flex-shrink-0 w-72 bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 transform hover:-translate-y-1 transition-all duration-300 fade-in';
+                card.style.animationDelay = `${index * 100}ms`;
+                
+                const imageUrl = product.images && product.images.length > 0 ? product.images[0] : 'https://placehold.co/600x800/e0e0e0/ffffff?text=Image+Not+Found';
+                const randomPrice = Math.floor(Math.random() * (300 - 150 + 1)) + 150;
+                const price = `₹${randomPrice}`;
+
+                let attributesHTML = '<div class="flex flex-wrap gap-2 mt-3">';
+                if (product.taxonomy_attributes && product.taxonomy_attributes.length > 0) {
+                    product.taxonomy_attributes.forEach(attr => {
+                        attributesHTML += `
+                            <button class="attr-btn text-xs font-semibold bg-gray-200 text-gray-800 px-3 py-1.5 rounded-full flex items-center gap-1.5"
+                                    data-attr-key="${attr.display_name}" 
+                                    data-attr-value="${attr.value}">
+                                <span>${attr.display_name}: ${attr.value}</span>
+                            </button>
+                        `;
+                    });
+                }
+                attributesHTML += '</div>';
+
+                card.innerHTML = `
+                    <img src="${imageUrl}" alt="${product.name}" class="w-full h-64 object-cover" onerror="this.onerror=null;this.src='https.placehold.co/600x800/e0e0e0/ffffff?text=Image+Not+Found';">
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg text-gray-900 truncate">${product.name}</h3>
+                        <p class="text-gray-700 font-bold text-xl mt-1">${price}</p>
+                        ${attributesHTML}
+                    </div>
+                `;
+                productGrid.appendChild(card);
+            });
+            
+            // Update scroll indicators after products are displayed
+            setTimeout(updateScrollIndicators, 100);
+        };
+        
+        const handleAttributeClick = (e) => {
+            const button = e.target.closest('.attr-btn');
+            if (!button) return;
+
+            const key = button.dataset.attrKey;
+            const value = button.dataset.attrValue;
+            const preferenceKey = `${key}::${value}`;
+
+            // Cycle through states: neutral -> include -> exclude -> neutral
+            if (!preferences[preferenceKey]) {
+                preferences[preferenceKey] = 'include';
+            } else if (preferences[preferenceKey] === 'include') {
+                preferences[preferenceKey] = 'exclude';
+            } else {
+                delete preferences[preferenceKey];
+            }
+            
+            updateAllAttributeButtons();
+        };
+
+        const updateAllAttributeButtons = () => {
+            const allButtons = document.querySelectorAll('.attr-btn');
+            allButtons.forEach(button => {
+                const key = button.dataset.attrKey;
+                const value = button.dataset.attrValue;
+                const preferenceKey = `${key}::${value}`;
+                
+                // Reset to default
+                button.innerHTML = `<span>${key}: ${value}</span>`;
+                button.className = 'attr-btn text-xs font-semibold bg-gray-200 text-gray-800 px-3 py-1.5 rounded-full flex items-center gap-1.5';
+
+                if (preferences[preferenceKey] === 'include') {
+                    button.className = 'attr-btn text-xs font-semibold bg-green-100 text-green-800 px-3 py-1.5 rounded-full flex items-center gap-1.5';
+                    button.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+                        <span>${key}: ${value}</span>
+                    `;
+                } else if (preferences[preferenceKey] === 'exclude') {
+                    button.className = 'attr-btn text-xs font-semibold bg-red-100 text-red-800 px-3 py-1.5 rounded-full flex items-center gap-1.5';
+                    button.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                        <span>${key}: ${value}</span>
+                    `;
+                }
+            });
+        };
+
+        const resetUI = () => {
+            errorMessage.classList.add('hidden');
+            chatLog.innerHTML = '';
+            productGrid.innerHTML = '';
+            followUpContainer.classList.add('hidden');
+            chatHistory = [];
+            preferences = {}; // Reset preferences on a new search
+            updateScrollIndicators(); // Hide scroll indicators when resetting
+        };
+
+        // --- Scroll Indicator Functions ---
+        
+        const scrollProducts = (direction) => {
+            const scrollAmount = 300; // Scroll by 300px
+            const currentScroll = productGrid.scrollLeft;
+            
+            if (direction === 'left') {
+                productGrid.scrollTo({
+                    left: currentScroll - scrollAmount,
+                    behavior: 'smooth'
+                });
+            } else {
+                productGrid.scrollTo({
+                    left: currentScroll + scrollAmount,
+                    behavior: 'smooth'
+                });
+            }
+        };
+
+        const updateScrollIndicators = () => {
+            const scrollLeft = document.getElementById('scrollLeft');
+            const scrollRight = document.getElementById('scrollRight');
+            
+            // Check if there's content to scroll
+            const hasOverflow = productGrid.scrollWidth > productGrid.clientWidth;
+            
+            if (!hasOverflow) {
+                scrollLeft.classList.add('hidden');
+                scrollRight.classList.add('hidden');
+                return;
+            }
+            
+            // Show/hide left indicator
+            if (productGrid.scrollLeft <= 0) {
+                scrollLeft.classList.add('hidden');
+            } else {
+                scrollLeft.classList.remove('hidden');
+            }
+            
+            // Show/hide right indicator
+            if (productGrid.scrollLeft >= productGrid.scrollWidth - productGrid.clientWidth - 1) {
+                scrollRight.classList.add('hidden');
+            } else {
+                scrollRight.classList.remove('hidden');
+            }
+        };
+
+        // Add scroll event listener to product grid
+        productGrid.addEventListener('scroll', updateScrollIndicators);
+        
+        // Update indicators when window resizes
+        window.addEventListener('resize', updateScrollIndicators);
+
+        // --- Event Listeners ---
+        searchButton.addEventListener('click', handleInitialSearch);
+        searchInput.addEventListener('keyup', (e) => e.key === 'Enter' && handleInitialSearch());
+        
+        followUpButton.addEventListener('click', handleFollowUp);
+        followUpInput.addEventListener('keyup', (e) => e.key === 'Enter' && handleFollowUp());
+
+        productGrid.addEventListener('click', handleAttributeClick);
+
+    </script>
+</body>
+</html>
