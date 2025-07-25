@@ -1,8 +1,8 @@
-from fastapi import FastAPI, HTTPException, Query, Body
-from typing import List, Optional, Dict, Any
+from fastapi import FastAPI, HTTPException
+from typing import List
 import uvicorn
-from models import ShopWithCategories, CategoryWithAttributes, Product, APIResponse, ProductFilter
-from data_loader import SHOPS, CATEGORIES, PRODUCTS, get_products_by_category_and_attributes, get_product_by_id
+from models import APIResponse, CategoriesRequest
+from data_loader import CATEGORIES, SHOPS
 
 app = FastAPI(
     title="E-commerce Backend API",
@@ -28,97 +28,39 @@ async def root():
         }
     )
 
-# 1. List Shops API
-@app.get("/shops", response_model=APIResponse)
-async def list_shops():
-    """
-    List all shops with their details including:
-    - Shop metadata (name, description, image_url)
-    - List of categories with metadata
-    """
+# 1. List Categories API
+"""
+Request:
+{
+    "shop_id": 1,
+}
+Response
+{
+    "first_prompt": "",
+    "categories": [
+        {
+            "category_name": "Sarees",
+            "category_images": [
+                "<img_url_1>",
+                ...
+            ]
+        }
+    ]
+}
+"""
+@app.post("/categories", response_model=APIResponse)
+async def list_categories(request: CategoriesRequest):
+    if request.shop_id not in SHOPS:
+        raise HTTPException(status_code=404, detail=f"Shop with ID '{request.shop_id}' not found")
+    
+    categories = [category for category in CATEGORIES.values() if category.shop_id == request.shop_id]
     return APIResponse(
         success=True,
-        data=list(SHOPS.values())
-    )
-
-# 2. List Categories API
-@app.get("/categories", response_model=APIResponse)
-async def list_categories():
-    """
-    List all categories with:
-    - Category metadata (name, description, image_url)
-    - List of attributes for each category
-    - List of possible values for each attribute
-    """
-    return APIResponse(
-        success=True,
-        data=list(CATEGORIES.values())
-    )
-
-# 2b. Get Category by ID API
-@app.get("/categories/{category_id}", response_model=APIResponse)
-async def get_category_by_id(category_id: str):
-    """
-    Get a specific category by its ID
-    Returns category information including:
-    - Category metadata (name, description, image_url)
-    - List of attributes for the category
-    - List of possible values for each attribute
-    """
-    if category_id not in CATEGORIES:
-        raise HTTPException(status_code=404, detail="Category not found")
-    
-    return APIResponse(
-        success=True,
-        data=CATEGORIES[category_id]
-    )
-
-# 3. Get Products API
-@app.post("/products", response_model=APIResponse)
-async def get_products(
-    category: str = Body(..., description="Category ID to filter products"),
-    filters: List[ProductFilter] = Body(default=[], description="List of attribute filters")
-):
-    """
-    Get products by category with optional attribute filters
-    Returns:
-    - List of product IDs with complete data
-    - Product image, name, price, reviews
-    - Product metadata and attributes
-    """
-    if category not in CATEGORIES:
-        raise HTTPException(status_code=404, detail="Category not found")
-    
-    # Convert filters to the expected format
-    filter_dicts = [{"attribute": f.attribute, "value": f.value} for f in filters]
-    
-    products = get_products_by_category_and_attributes(category, filter_dicts)
-    
-    return APIResponse(
-        success=True,
-        data=products,
-        message=f"Found {len(products)} products for category '{category}'"
-    )
-
-# 4. Get Product by ID API
-@app.get("/products/{product_id}", response_model=APIResponse)
-async def get_product_by_id_endpoint(product_id: str):
-    """
-    Get a specific product by its ID
-    Returns complete product information including:
-    - Product details (name, description, price, image)
-    - Reviews and ratings
-    - All attributes and metadata
-    """
-    product = get_product_by_id(product_id)
-    
-    if not product:
-        raise HTTPException(status_code=404, detail="Product not found")
-    
-    return APIResponse(
-        success=True,
-        data=product
+        data={
+            "first_prompt": SHOPS[request.shop_id].first_prompt,
+            "categories": categories
+        }
     )
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000) 
+    uvicorn.run(app, host="0.0.0.0", port=8000)

@@ -1,23 +1,17 @@
 {
-  "shop_1": {
-    "id": "shop_1",
-    "name": "Fashion Store",
-    "description": "Your one-stop destination for trendy fashion",
-    "image_url": "https://example.com/images/fashion-store.jpg",
-    "category_ids": ["clothing", "accessories", "footwear"]
+  "1": {
+    "id": "1",
+    "name": "Ethnic Wear Store",
+    "first_prompt": ""
   },
-  "shop_2": {
-    "id": "shop_2",
-    "name": "Electronics Hub",
-    "description": "Latest electronics and gadgets",
-    "image_url": "https://example.com/images/electronics-hub.jpg",
-    "category_ids": ["smartphones", "laptops"]
+  "2": {
+    "id": "2",
+    "name": "Western Wear Store",
+    "first_prompt": ""
   },
-  "shop_3": {
-    "id": "shop_3",
-    "name": "Home & Garden",
-    "description": "Everything for your home and garden needs",
-    "image_url": "https://example.com/images/home-garden.jpg",
-    "category_ids": ["furniture", "decor", "appliances"]
+  "3": {
+    "id": "3",
+    "name": "Home Decor Store",
+    "first_prompt": ""
   }
-} 
+}

@@ -1,50 +1,122 @@
 {
-  "clothing": {
-    "id": "clothing",
-    "name": "Clothing",
-    "description": "Fashion clothing for all occasions",
-    "image_url": "https://example.com/images/clothing.jpg"
+  "1": {
+    "id": 1,
+    "name": "Mens Tshirt",
+    "images": [
+      "https://example.com/images/mens-tshirt-1.jpg",
+      "https://example.com/images/mens-tshirt-2.jpg",
+      "https://example.com/images/mens-tshirt-3.jpg"
+    ],
+    "shop_id": "2"
   },
-  "accessories": {
-    "id": "accessories",
-    "name": "Accessories",
-    "description": "Fashion accessories to complete your look",
-    "image_url": "https://example.com/images/accessories.jpg"
+  "2": {
+    "id": 2,
+    "name": "Mens Jeans",
+    "images": [
+      "https://example.com/images/mens-jeans-1.jpg",
+      "https://example.com/images/mens-jeans-2.jpg",
+      "https://example.com/images/mens-jeans-3.jpg"
+    ],
+    "shop_id": "2"
   },
-  "footwear": {
-    "id": "footwear",
-    "name": "Footwear",
-    "description": "Comfortable and stylish footwear",
-    "image_url": "https://example.com/images/footwear.jpg"
+  "3": {
+    "id": 3,
+    "name": "Caps",
+    "images": [
+      "https://example.com/images/caps-1.jpg",
+      "https://example.com/images/caps-2.jpg",
+      "https://example.com/images/caps-3.jpg"
+    ],
+    "shop_id": "2"
   },
-  "smartphones": {
-    "id": "smartphones",
-    "name": "Smartphones",
-    "description": "Latest smartphones with cutting-edge technology",
-    "image_url": "https://example.com/images/smartphones.jpg"
+  "4": {
+    "id": 4,
+    "name": "Sport Shoes",
+    "images": [
+      "https://example.com/images/sport-shoes-1.jpg",
+      "https://example.com/images/sport-shoes-2.jpg",
+      "https://example.com/images/sport-shoes-3.jpg"
+    ],
+    "shop_id": "2"
   },
-  "laptops": {
-    "id": "laptops",
-    "name": "Laptops",
-    "description": "High-performance laptops for work and gaming",
-    "image_url": "https://example.com/images/laptops.jpg"
+  "5": {
+    "id": 5,
+    "name": "Sarees",
+    "images": [
+      "https://example.com/images/sarees-1.jpg",
+      "https://example.com/images/sarees-2.jpg",
+      "https://example.com/images/sarees-3.jpg"
+    ],
+    "shop_id": "1"
   },
-  "furniture": {
-    "id": "furniture",
-    "name": "Furniture",
-    "description": "Beautiful furniture for your home",
-    "image_url": "https://example.com/images/furniture.jpg"
+  "6": {
+    "id": 6,
+    "name": "Kurti",
+    "images": [
+      "https://example.com/images/kurti-1.jpg",
+      "https://example.com/images/kurti-2.jpg",
+      "https://example.com/images/kurti-3.jpg"
+    ],
+    "shop_id": "1"
   },
-  "decor": {
-    "id": "decor",
-    "name": "Home Decor",
-    "description": "Decorative items to beautify your space",
-    "image_url": "https://example.com/images/decor.jpg"
+  "7": {
+    "id": 7,
+    "name": "Sherwani",
+    "images": [
+      "https://example.com/images/sherwani-1.jpg",
+      "https://example.com/images/sherwani-2.jpg",
+      "https://example.com/images/sherwani-3.jpg"
+    ],
+    "shop_id": "1"
   },
-  "appliances": {
-    "id": "appliances",
-    "name": "Appliances",
-    "description": "Essential home appliances for modern living",
-    "image_url": "https://example.com/images/appliances.jpg"
+  "8": {
+    "id": 8,
+    "name": "Jooti",
+    "images": [
+      "https://example.com/images/jooti-1.jpg",
+      "https://example.com/images/jooti-2.jpg",
+      "https://example.com/images/jooti-3.jpg"
+    ],
+    "shop_id": "1"
+  },
+  "9": {
+    "id": 9,
+    "name": "Lamps",
+    "images": [
+      "https://example.com/images/lamps-1.jpg",
+      "https://example.com/images/lamps-2.jpg",
+      "https://example.com/images/lamps-3.jpg"
+    ],
+    "shop_id": "3"
+  },
+  "10": {
+    "id": 10,
+    "name": "Wall Paintings",
+    "images": [
+      "https://example.com/images/wall-paintings-1.jpg",
+      "https://example.com/images/wall-paintings-2.jpg",
+      "https://example.com/images/wall-paintings-3.jpg"
+    ],
+    "shop_id": "3"
+  },
+  "11": {
+    "id": 11,
+    "name": "Plants",
+    "images": [
+      "https://example.com/images/plants-1.jpg",
+      "https://example.com/images/plants-2.jpg",
+      "https://example.com/images/plants-3.jpg"
+    ],
+    "shop_id": "3"
+  },
+  "12": {
+    "id": 12,
+    "name": "Rug",
+    "images": [
+      "https://example.com/images/rug-1.jpg",
+      "https://example.com/images/rug-2.jpg",
+      "https://example.com/images/rug-3.jpg"
+    ],
+    "shop_id": "3"
   }
-} 
+}
