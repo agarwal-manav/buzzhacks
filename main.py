@@ -1,16 +1,16 @@
 from fastapi import FastAPI, HTTPException
-from typing import List
 import uvicorn
-from models import APIResponse, AgentRequest, AgentResponse, CategoriesRequest, CategoriesResponse, ProductResponse
+from models import APIResponse, AgentRequest, AgentResponse, CategoriesRequest, CategoriesResponse, ProductResponse, TryProductOnImageRequest, TryProductOnImageResponse
 from data_loader import CATEGORIES, SHOPS
 import httpx
-from pydantic import BaseModel
+from service.try_on_service import TryOnService
 
 app = FastAPI(
     title="E-commerce Backend API",
     description="Backend API for e-commerce platform with shops, categories, and products",
     version="1.0.0"
 )
+try_on_service = TryOnService()
 
 @app.get("/", response_model=APIResponse)
 async def root():
@@ -42,8 +42,8 @@ Response
     "first_prompt": "",
     "categories": [
         {
-            "category_name": "Sarees",
-            "category_images": [
+            "name": "Sarees",
+            "images": [
                 "<img_url_1>",
                 ...
             ]
@@ -127,6 +127,22 @@ async def agent_wrapper(request: AgentRequest):
         raise HTTPException(status_code=e.response.status_code, detail=f"Agent returned error: {e.response.text}")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
+# 3. Try product on user image
+"""
+Request:
+{
+    "product_img_url": "",
+    "user_img_url": ""
+}
+Respose:
+{
+    "img_url": ""
+}
+"""
+@app.post("/try_product_on_image", response_model=TryProductOnImageResponse)
+async def try_product_on_image(request: TryProductOnImageRequest):
+    return TryProductOnImageResponse(img_url=try_on_service.try_on(request.product_img_url, request.user_img_url))
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8001)

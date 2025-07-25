@@ -43,3 +43,10 @@ class AgentResponse(BaseModel):
 class CategoriesResponse(BaseModel):
     first_prompt: str
     categories: List[CategoryMetadata]
+
+class TryProductOnImageRequest(BaseModel):
+    product_img_url: str
+    user_img_url: str
+
+class TryProductOnImageResponse(BaseModel):
+    img_url: str
