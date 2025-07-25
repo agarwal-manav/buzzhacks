@@ -23,6 +23,8 @@ app.add_middleware(
 
 try_on_service = TryOnService()
 
+inmem_cache = {}
+
 @app.get("/", response_model=APIResponse)
 async def root():
     """Root endpoint with API information"""
@@ -81,6 +83,10 @@ async def agent_wrapper(request: AgentRequest):
     Accepts prompts list and products array, returns complete response with AI answer and full products array
     """
     
+    if len(request.prompts) == 1:
+        if request.prompts[0] in inmem_cache:
+            return inmem_cache[request.prompts[0]]
+    
     n8n_webhook_url = "http://localhost:5678/webhook/eded0c77-3125-45ab-9796-7501a498d3be"
     
     # Map prompts to webhook's expected format with products array
@@ -105,10 +111,13 @@ async def agent_wrapper(request: AgentRequest):
             ai_response = webhook_response.get("ai_response", "")
             products = webhook_response.get("products", [])
             
-            return AgentResponse(
+            agent_response = AgentResponse(
                 ai_response=ai_response,
                 products=products
             )
+            if len(request.prompts) == 1:
+                inmem_cache[request.prompts[0]] = agent_response
+            return agent_response
     except httpx.TimeoutException:
         raise HTTPException(status_code=504, detail="Request to agent timed out")
     except httpx.RequestError as e:
