@@ -20,3 +20,26 @@ class APIResponse(BaseModel):
     success: bool
     data: Any
     message: Optional[str] = None
+
+# Models for the agent wrapper API
+class ChatMessage(BaseModel):
+    role: str
+    content: str
+
+class AgentRequest(BaseModel):
+    prompts: List[str]
+
+class ProductResponse(BaseModel):
+    product_id: int
+    product_name: str
+    price: float
+    rating: float
+    image_url: str
+
+class AgentResponse(BaseModel):
+    ai_response: str
+    products: List[ProductResponse]
+
+class CategoriesResponse(BaseModel):
+    first_prompt: str
+    categories: List[CategoryMetadata]

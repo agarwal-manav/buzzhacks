@@ -1,29 +1,10 @@
 from fastapi import FastAPI, HTTPException
 from typing import List
 import uvicorn
-from models import APIResponse, CategoriesRequest
+from models import APIResponse, AgentRequest, AgentResponse, CategoriesRequest, CategoriesResponse, ProductResponse
 from data_loader import CATEGORIES, SHOPS
 import httpx
 from pydantic import BaseModel
-
-# Models for the agent wrapper API
-class ChatMessage(BaseModel):
-    role: str
-    content: str
-
-class AgentRequest(BaseModel):
-    prompts: List[str]
-
-class ProductResponse(BaseModel):
-    product_id: int
-    product_name: str
-    price: float
-    rating: float
-    image_url: str
-
-class AgentResponse(BaseModel):
-    ai_response: str
-    products: List[ProductResponse]
 
 app = FastAPI(
     title="E-commerce Backend API",
@@ -70,21 +51,18 @@ Response
     ]
 }
 """
-@app.post("/categories", response_model=APIResponse)
+@app.post("/categories", response_model=CategoriesResponse)
 async def list_categories(request: CategoriesRequest):
     if request.shop_id not in SHOPS:
         raise HTTPException(status_code=404, detail=f"Shop with ID '{request.shop_id}' not found")
     
     categories = [category for category in CATEGORIES.values() if category.shop_id == request.shop_id]
-    return APIResponse(
-        success=True,
-        data={
-            "first_prompt": SHOPS[request.shop_id].first_prompt,
-            "categories": categories
-        }
+    return CategoriesResponse(
+        first_prompt=SHOPS[request.shop_id].first_prompt,
+        categories=categories
     )
 
-# 5. Agent Wrapper API to get products from prompt 
+# 2. Agent Wrapper API to get products from prompt 
 @app.post("/products", response_model=AgentResponse)
 async def agent_wrapper(request: AgentRequest):
     """
@@ -141,7 +119,6 @@ async def agent_wrapper(request: AgentRequest):
                 ai_response=ai_response,
                 products=products
             )
-            
     except httpx.TimeoutException:
         raise HTTPException(status_code=504, detail="Request to agent timed out")
     except httpx.RequestError as e:
