@@ -7,6 +7,7 @@ class TryOnService:
         "SG_c7ef6235f921f150",
         "SG_d5b9ece50252bdf6",
         "SG_57a3fd070c58cd5d",
+        "SG_fbc2026ee36f2c53",
     ]
     api_key_index = 0
     
